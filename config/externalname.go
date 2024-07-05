@@ -6,7 +6,6 @@ package config
 
 import (
 	"github.com/crossplane/upjet/pkg/config"
-	"github.com/ecoupal-believe/provider-rabbitmq/config/common"
 )
 
 // terraformPluginSDKExternalNameConfigs contains all external name configurations
