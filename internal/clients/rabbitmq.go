@@ -15,7 +15,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/terraform"
 
-	"github.com/upbound/upjet-provider-template/apis/v1beta1"
+	"github.com/believe/provider-rabbitmq/apis/v1beta1"
 )
 
 const (
@@ -24,20 +24,21 @@ const (
 	errGetProviderConfig    = "cannot get referenced ProviderConfig"
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
-	errUnmarshalCredentials = "cannot unmarshal template credentials as JSON"
+	errUnmarshalCredentials = "cannot unmarshal rabbitmq credentials as JSON"
+
+	username        = "username"
+	password        = "password"
+	endpoint        = "endpoint"
+	insecure        = "insecure"
+	cacert_file     = "cacert_file"
+	clientcert_file = "clientcert_file"
+	clientkey_file  = "clientkey_file"
+	proxy           = "proxy"
 )
 
-// TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
-// returns Terraform provider setup configuration
-func TerraformSetupBuilder(version, providerSource, providerVersion string) terraform.SetupFn {
+func TerraformSetupBuilder(tfProvider *schema.Provider) terraform.SetupFn {
 	return func(ctx context.Context, client client.Client, mg resource.Managed) (terraform.Setup, error) {
-		ps := terraform.Setup{
-			Version: version,
-			Requirement: terraform.ProviderRequirement{
-				Source:  providerSource,
-				Version: providerVersion,
-			},
-		}
+		ps := terraform.Setup{}
 
 		configRef := mg.GetProviderConfigReference()
 		if configRef == nil {
@@ -62,11 +63,32 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
 		}
 
-		// Set credentials in Terraform provider configuration.
-		/*ps.Configuration = map[string]any{
-			"username": creds["username"],
-			"password": creds["password"],
-		}*/
+		ps.Configuration = map[string]any{}
+		if v, ok := creds[username]; ok {
+			ps.Configuration[username] = v
+		}
+		if v, ok := creds[password]; ok {
+			ps.Configuration[password] = v
+		}
+		if v, ok := creds[endpoint]; ok {
+			ps.Configuration[endpoint] = v
+		}
+		if v, ok := creds[insecure]; ok {
+			ps.Configuration[insecure] = v
+		}
+		if v, ok := creds[cacert_file]; ok {
+			ps.Configuration[cacert_file] = v
+		}
+		if v, ok := creds[clientcert_file]; ok {
+			ps.Configuration[clientcert_file] = v
+		}
+		if v, ok := creds[clientkey_file]; ok {
+			ps.Configuration[clientkey_file] = v
+		}
+		if v, ok := creds[proxy]; ok {
+			ps.Configuration[proxy] = v
+		}
+
 		return ps, nil
 	}
 }
