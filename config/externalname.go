@@ -5,6 +5,7 @@
 package config
 
 import (
+	"github.com/believe/provider-rabbitmq/config/common"
 	"github.com/crossplane/upjet/pkg/config"
 )
 

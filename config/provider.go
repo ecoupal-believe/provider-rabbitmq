@@ -20,7 +20,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/terraform-providers/terraform-provider-rabbitmq/rabbitmq"
 
-	"github.com/believe/provider-rabbitmq/config/rabbitmq"
+	resources "github.com/believe/provider-rabbitmq/config/rabbitmq"
 )
 
 const (
@@ -89,14 +89,13 @@ func GetProvider(_ context.Context, generationProvider bool) (*ujconfig.Provider
 		ujconfig.WithReferenceInjectors([]ujconfig.ReferenceInjector{reference.NewInjector(modulePath)}),
 		ujconfig.WithSkipList(skipList),
 		ujconfig.WithFeaturesPackage("internal/features"),
-		ujconfig.WithMainTemplate(hack.MainTemplate),
 		ujconfig.WithTerraformProvider(sdkProvider),
 		ujconfig.WithSchemaTraversers(&ujconfig.SingletonListEmbedder{}),
 	)
 
 	bumpVersionsWithEmbeddedLists(pc)
 	for _, configure := range []func(provider *ujconfig.Provider){
-		rabbitmq.Configure(),
+		resources.Configure,
 	} {
 		configure(pc)
 	}

@@ -5,7 +5,7 @@ Copyright 2021 Upbound Inc.
 package main
 
 import (
-	context "
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -16,6 +16,7 @@ import (
 	"github.com/believe/provider-rabbitmq/config"
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 	"github.com/crossplane/upjet/pkg/pipeline"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 func main() {
